@@ -1,0 +1,12 @@
+# creates a CV that measures the RMSD from a reference pdb structure
+# the RMSD is measured after OPTIMAL alignment with the target structure
+rmsd: RMSD REFERENCE=reference_struct.pdb TYPE=OPTIMAL
+# the movingrestraint
+restraint: ...
+MOVINGRESTRAINT
+ARG=rmsd
+AT0=0.0 STEP0=0      KAPPA0=0
+AT1=0.0 STEP1=25000000   KAPPA1=2092
+...
+# monitor the two variables and various restraint outputs
+PRINT STRIDE=10 ARG=* FILE=COLVAR
