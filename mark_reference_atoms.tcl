@@ -1,5 +1,11 @@
+<<<<<<< HEAD
 set ref_mark_sel [atomselect 0 "name CA and resid 99 to 108 334 to 342 914 to 922 1128 to 1138 1114 to 1121 318 to 326 1003 to 1010 122 to 129"]
 set  md_mark_sel [atomselect 1 "name CA and resid 99 to 108 334 to 342 914 to 922 1128 to 1138 1114 to 1121 318 to 326 1003 to 1010 122 to 129"]
+=======
+
+set ref_mark_sel [atomselect 0 "name CA and resid 99 to 108 334 to 342 914 to 922 1128 to 1138 1114 to 1121 318 to 326 1003 to 1010 122 to 129"]
+set md_mark_sel [atomselect 1 "name CA and resid 99 to 108 334 to 342 914 to 922 1128 to 1138 1114 to 1121 318 to 326 1003 to 1010 122 to 129"]
+>>>>>>> 2eaf0eaf3e8610042bc356a4109ccfd8c5a64788
 
 set x [$ref_mark_sel get x]
 set y [$ref_mark_sel get y]
