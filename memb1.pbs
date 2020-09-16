@@ -1,0 +1,61 @@
+#!/bin/bash
+#PBS -P r16
+#PBS -q gpuvolta
+#PBS -l ngpus=1
+#PBS -l ncpus=12
+#PBS -l storage=scratch/f91
+#PBS -m abe
+#PBS -l walltime=0:30:00
+#PBS -l mem=8GB
+#PBS -l wd
+#PBS -M yearlyboozefest@gmail.com
+
+
+module load intel-mkl/2019.5.281
+module load cuda/10.1
+module load openmpi/4.0.2
+module load plumed/2.6.0
+
+root=$(qstat -f $PBS_JOBID | sed -rn 's/.*Resource_List.walltime = (.*)/\1/p' ) 
+h=$(echo $root | awk -F: '{print $1}')
+m=$(echo $root | awk -F: '{print $2}')
+s=$(echo $root | awk -F: '{print $3}')
+sleep_time=$(( $h*3600 + $m * 60 + $s ))
+sleep_time=$( echo "$sleep_time * 0.95" |  bc -l )
+h_time=$( echo "$sleep_time / 3600" | bc -l )
+
+cd $PBS_O_WORKDIR
+#just doing this so we can see benchmarks over time and keep track of things.
+cp memb_prod1.log memb_prod1_backup.log
+
+export OMP_NUM_THREADS=10
+export PLUMED_NUM_THREADS=2
+if [ -f memb_prod1.cpt ]
+then
+/scratch/f91/ma2374/omp_gmx/gromacs-2020.2/bin/gmx mdrun -v -cpi memb_prod1.cpt -ntmpi $PBS_NGPUS -ntomp $OMP_NUM_THREADS -deffnm memb_prod1 -maxh $h_time -plumed plumed_scripts/tmd.dat &
+md_proc=$!
+else 
+/scratch/f91/ma2374/omp_gmx/gromacs-2020.2/bin/gmx grompp -f memb_prod.mdp -o memb_prod1.tpr -c memb16.gro   -p topol.top 
+/scratch/f91/ma2374/omp_gmx/gromacs-2020.2/bin/gmx mdrun -v -ntmpi $PBS_NGPUS -ntomp $OMP_NUM_THREADS -deffnm memb_prod1 -maxh $h_time -plumed plumed_scripts/tmd.dat&
+md_proc=$!
+
+fi 
+
+echo $last_err
+echo $sleep_time
+
+#if the job has run for more than an hour resubmit it 
+
+#wait till the md process has finished and if it has exitted without errors resubmit this script to restart from a checkpoint
+tail --pid=$md_proc -f /dev/null
+last_err=$?
+wallt=$(qstat -f $PBS_JOBID | sed -rn 's/.*resources_used.walltime = (.*)/\1/p' ) 
+wallt=$(echo $wallt | awk -F: '{print $1}')
+
+source $HOME/.bashrc
+
+if [  $wallt -gt 0 ] ; 
+then 
+nsub memb2.pbs 
+fi
+exit 

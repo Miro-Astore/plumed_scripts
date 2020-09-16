@@ -1,0 +1,17 @@
+# restart previous simulation
+# RESTART
+
+ # set up two variables for Phi and Psi dihedral angles 
+ PCAVARS REFERENCE=plumed_pca_1.pdb TYPE=OPTIMAL LABEL=pca1
+ PCAVARS REFERENCE=plumed_pca_2.pdb TYPE=OPTIMAL LABEL=pca2
+ PCAVARS REFERENCE=plumed_pca_2.pdb TYPE=OPTIMAL LABEL=pca3
+ #
+ # Activate metadynamics in phi and psi
+ # depositing a Gaussian every 500 time steps,
+ # with height equal to 12 kJoule/mol,
+ # and width 0.35 rad for both CVs. 
+ #
+ metad: METAD ARG=pca1.residual,pca2.residual,pca3.residual PACE=500 HEIGHT=12 SIGMA=10,10,10 FILE=HILLS 
+
+ # monitor the two variables and the metadynamics bias potential
+ PRINT STRIDE=10 ARG=pca1.residual,pca2.residual,pca3.residual,metad.bias FILE=COLVAR
