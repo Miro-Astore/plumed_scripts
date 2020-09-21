@@ -11,7 +11,7 @@
  # with height equal to 12 kJoule/mol,
  # and width 0.35 rad for both CVs. 
  #
- metad: METAD ARG=pca1.residual,pca2.residual,pca3.residual PACE=500 HEIGHT=12 SIGMA=10,10,10 FILE=HILLS 
+ metad: METAD ARG=pca1.eig,pca2.eig,pca3.eig PACE=500 HEIGHT=12 SIGMA=10,10,10 FILE=HILLS 
 
  # monitor the two variables and the metadynamics bias potential
- PRINT STRIDE=10 ARG=pca1.residual,pca2.residual,pca3.residual,metad.bias FILE=COLVAR
+ PRINT STRIDE=10 ARG=pca1.eig,pca2.eig,pca3.eig,metad.bias FILE=COLVAR
