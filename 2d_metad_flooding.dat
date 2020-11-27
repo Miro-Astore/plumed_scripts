@@ -11,7 +11,7 @@
  # with heig-1ht equal to 12 kJoule/mol,
  # and width 0.35 rad for both CVs. 
  
- metad: METAD ARG=pca1.eig-1,pca3.eig-1 PACE=500 HEIGHT=100 SIGMA=10,10 GRID_MIN=-40,-40 GRID_MAX=40,40 GRID_SPACING=0.05,0.05 GRID_WSTRIDE=10000 GRID_WFILE=GRIDS
+ metad: METAD ARG=pca1.eig-1,pca3.eig-1 PACE=500 HEIGHT=0.2 SIGMA=0.2,0.2 GRID_MIN=-40,-40 GRID_MAX=40,40 GRID_SPACING=0.05,0.05 GRID_WSTRIDE=10000 GRID_WFILE=GRIDS
 
 
  # monitor the two variables and the metadynamics bias potential
