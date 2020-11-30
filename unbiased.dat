@@ -14,4 +14,4 @@
 
 
  # monitor the two variables and the metadynamics bias potential
- PRINT STRIDE=10 ARG=pca1.eig-1,pca3.eig-1 FILE=COLVAR
+ PRINT STRIDE=50 ARG=pca1.eig-1,pca3.eig-1 FILE=COLVAR
