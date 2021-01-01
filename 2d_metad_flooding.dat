@@ -9,10 +9,17 @@
  # Activate metadynamics in phi and psi
  # depositing a Gaussian every 500 time steps,
  # with heig-1ht equal to 12 kJoule/mol,
- # and width 0.35 rad for both CVs. 
+ #  and width 0.35 rad for both CVs. 
+
+UPPER_WALLS ARG=pca1.eig-1 KAPPA=2000000 AT=0.08 LABEL=uwall1
+LOWER_WALLS ARG=pca1.eig-1 KAPPA=2000000 AT=-0.08 LABEL=lwall1
+                                        
+UPPER_WALLS ARG=pca3.eig-1 KAPPA=2000000 AT=0.08 LABEL=uwall2
+LOWER_WALLS ARG=pca3.eig-1 KAPPA=2000000 AT=-0.08 LABEL=lwall2
  
- metad: METAD ARG=pca1.eig-1,pca3.eig-1 PACE=500 HEIGHT=0.2 SIGMA=0.001,0.001 GRID_MIN=-0.02,-0.02 GRID_MAX=0.02,0.02 GRID_SPACING=0.0001,0.0001 GRID_WSTRIDE=10000 GRID_WFILE=GRIDS
+ 
+ metad: METAD ARG=pca1.eig-1,pca3.eig-1 PACE=500 HEIGHT=0.1 SIGMA=0.0005,0.0005 GRID_MIN=-0.1,-0.1 GRID_MAX=0.1,0.1 GRID_SPACING=0.0002,0.0002 GRID_WSTRIDE=10000 GRID_WFILE=GRIDS
 
 
  # monitor the two variables and the metadynamics bias potential
- PRINT STRIDE=10 ARG=pca1.eig-1,metad.bias FILE=COLVAR
+ PRINT STRIDE=1000 ARG=pca1.eig-1,pca3.eig-1,metad.bias FILE=COLVAR

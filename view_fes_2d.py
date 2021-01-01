@@ -3,11 +3,11 @@ import matplotlib.pyplot as plt
 import re
 
 #need the number of bins in each axis of the grid.
-data=np.loadtxt('GRIDS')
+data=np.loadtxt('fes.dat')
 pattern=re.compile('nbins')
 grid_dims=[0,0]
 ind=0
-for i, line in enumerate(open('GRIDS')):
+for i, line in enumerate(open('fes.dat')):
     for match in re.finditer(pattern, line):
             #print ('Found on line %s: %s' % (i+1, match.group()))
             #print(line)
