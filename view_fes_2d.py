@@ -1,4 +1,5 @@
 import numpy as np
+from matplotlib.ticker import MaxNLocator
 import matplotlib.pyplot as plt
 import re
 
@@ -24,22 +25,32 @@ x,y,z=(data[:,0],data[:,1],data[:,2])
 x=np.reshape(x,grid_dims)
 y=np.reshape(y,grid_dims)
 z=np.reshape(z,grid_dims)
-print(z)
+
+print(np.shape(z))
+
 #print (type(x))
 #print ((x))
 
 type(x)
+
 # x and y are bounds, so z should be the value *inside* those bounds.
 # Therefore, remove the last value from the z array.
 #z = z[:-1, :-1]
-z_min, z_max = -np.abs(z).max(), np.abs(z).max()
+
+#z_min, z_max =  np.abs(z).max(), -np.abs(z).min()
+
+
 #
 fig, ax = plt.subplots()
-#
-c = ax.pcolormesh(x, y, z, cmap='RdBu', vmin=z_min, vmax=z_max)
+
+#c = ax.contourf(x, y, z, cmap='RdBu', vmin=z_min, vmax=z_max,rasterized=True)
+#levels = MaxNLocator(nbins=15).tick_values(z_min, z_max)
+c = ax.pcolormesh(x, y, z)
 ax.set_title('pcolormesh')
 # set the limits of the plot to the limits of the data
 ax.axis([x.min(), x.max(), y.min(), y.max()])
+ax.set_xlabel('pca1')
+ax.set_ylabel('pca3')
 fig.colorbar(c, ax=ax)
-#
+
 plt.show()
