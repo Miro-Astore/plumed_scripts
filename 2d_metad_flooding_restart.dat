@@ -13,6 +13,7 @@ RESTART
 
 UPPER_WALLS ARG=pca1.eig-1 KAPPA=2000000 AT=0.08 LABEL=uwall1
 LOWER_WALLS ARG=pca1.eig-1 KAPPA=2000000 AT=-0.08 LABEL=lwall1
+<<<<<<< HEAD
                                         
 UPPER_WALLS ARG=pca2.eig-1 KAPPA=2000000 AT=0.08 LABEL=uwall2
 LOWER_WALLS ARG=pca2.eig-1 KAPPA=2000000 AT=-0.08 LABEL=lwall2
@@ -22,4 +23,4 @@ LOWER_WALLS ARG=pca2.eig-1 KAPPA=2000000 AT=-0.08 LABEL=lwall2
 
 
  # monitor the two variables and the metadynamics bias potential
- PRINT STRIDE=1000 ARG=pca1.eig-1,pca2.eig-1,metad.bias FILE=COLVAR
+ PRINT STRIDE=10000 ARG=pca1.eig-1,pca2.eig-1,metad.bias FILE=COLVAR

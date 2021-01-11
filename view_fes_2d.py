@@ -20,6 +20,7 @@ for i, line in enumerate(open('fes.dat')):
         x_label_text=x_label_text.split('.')[0]
         y_label_text=x_label_text.split('.')[0]
 
+for i, line in enumerate(open('fes.dat')):
     for match in re.finditer(pattern, line):
             #print ('Found on line %s: %s' % (i+1, match.group()))
             #print(line)
@@ -60,8 +61,8 @@ c = ax.pcolormesh(x, y, z)
 ax.set_title('pcolormesh')
 # set the limits of the plot to the limits of the data
 ax.axis([x.min(), x.max(), y.min(), y.max()])
-ax.set_xlabel(x_label_text)
-ax.set_ylabel(y_label_text)
+ax.set_xlabel('pca1')
+ax.set_ylabel('pca3')
 fig.colorbar(c, ax=ax)
 
 plt.show()
