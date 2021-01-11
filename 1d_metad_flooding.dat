@@ -10,6 +10,10 @@
  # depositing a Gaussian every 500 time steps,
  # with heig-1ht equal to 12 kJoule/mol,
  # and width 0.35 rad for both CVs. 
+
+UPPER_WALLS ARG=pca1.eig-1 KAPPA=20 AT=0.08 LABEL=uwall
+LOWER_WALLS ARG=pca1.eig-1 KAPPA=20 AT=-0.08 LABEL=lwall
+ 
  
  metad: METAD ARG=pca1.eig-1 PACE=500 HEIGHT=0.1 SIGMA=0.0005 GRID_MIN=-0.1 GRID_MAX=0.1 GRID_SPACING=0.0002 GRID_WSTRIDE=10000 GRID_WFILE=GRIDS
 

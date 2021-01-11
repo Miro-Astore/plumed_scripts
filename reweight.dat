@@ -1,0 +1,28 @@
+ PCAVARS REFERENCE=plumed_pca_1.pdb TYPE=OPTIMAL LABEL=pca1
+ PCAVARS REFERENCE=plumed_pca_2.pdb TYPE=OPTIMAL LABEL=pca2
+
+# Activate well-tempered metadynamics in phi
+metad: METAD ARG=pca1.eig-1,pca2.eig-1 ...
+# Deposit a Gaussian every 500 time steps, with initial height equal to 1.2 kJ/mol
+PACE=10000000 HEIGHT=0.0 # <- this is the new stuff!
+# the bias factor should be wisely chosen
+BIASFACTOR=10000
+# Gaussian width (sigma) should be chosen based on CV fluctuation in unbiased run
+SIGMA=0.0005,0.0005
+# Gaussians will be written to file and also stored on grid
+FILE=HILLS GRID_MIN=-0.1,-0.1 GRID_MAX=0.1,0.1
+# Say that METAD should be restarting
+RESTART=YES # <- this is the new stuff!
+...
+
+#PRINT ARG=pca1.eig-1,pca2.eig-1,metad.bias FILE=COLVAR_reweighted STRIDE=1  # <- also change this one!
+## use the metadynamics bias as argument
+# as: REWEIGHT_BIAS ARG=__FILL__
+##
+# hhphi: HISTOGRAM ARG=pca1.eig-1 STRIDE=50 GRID_MIN=-0.1 GRID_MAX=0.1 GRID_BIN=600 BANDWIDTH=0.1 LOGWEIGHTS=as
+# hhpsi: HISTOGRAM ARG=psi STRIDE=50 GRID_MIN=-pi GRID_MAX=pi GRID_BIN=600 BANDWIDTH=0.1 LOGWEIGHTS=as
+# ffphi: CONVERT_TO_FES GRID=hhphi
+# ffpsi: CONVERT_TO_FES GRID=hhpsi
+#
+# DUMPGRID GRID=ffphi FILE=ffphi.dat
+# DUMPGRID GRID=ffpsi FILE=ffpsi.dat
