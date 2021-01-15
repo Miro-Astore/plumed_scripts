@@ -1,5 +1,5 @@
 #usage 
-# python do_block_fes.py reweighted_file.weight NCV's  Block_size
+# python do_block_fes.py reweighted_file.weight NCV's  Block_size file_name_root
 import math
 import sys
 
@@ -17,7 +17,7 @@ for i in range(0, NCV_):
 # read KBT_
 KBT_ = float(sys.argv[3*NCV_+3])
 # block size 
-BSIZE_ = int(sys.argv[-1])
+BSIZE_ = int(sys.argv[-2])
 
 def get_indexes_from_index(index, nbin):
     indexes = []
@@ -104,7 +104,8 @@ for iblock in range(0, nblock):
            histo_ave2[key]  = histo[key] * histo[key]
 
 # print out fes and error 
-log = open("fes."+str(BSIZE_)+".dat", "w")
+name_root=str(sys.argv[-1])
+log = open("fes."+name_root+"."+str(BSIZE_)+".dat", "w")
 # this is needed to add a blank line
 xs_old = []
 for i in range(0, nbins):

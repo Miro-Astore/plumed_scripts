@@ -64,5 +64,21 @@ ax.axis([x.min(), x.max(), y.min(), y.max()])
 ax.set_xlabel('pca1')
 ax.set_ylabel('pca3')
 fig.colorbar(c, ax=ax)
+print(x[0,:])
+
+def format_coord(xt, yt):
+    xarr = x[0,:]
+    yarr = y[:,0]
+    if ((xt > xarr.min()) & (xt <= xarr.max()) & 
+        (yt > yarr.min()) & (yt <= yarr.max())):
+        col = np.searchsorted(xarr, xt)-1
+        row = np.searchsorted(yarr, yt)-1
+        zt = z[row, col]
+        return f'xt={xt:1.4f}, yt={yt:1.4f}, zt={zt:1.4f}'
+        #return f'zt={zt:1.4f}'
+    else:
+        return f''
+
+ax.format_coord = format_coord
 
 plt.show()

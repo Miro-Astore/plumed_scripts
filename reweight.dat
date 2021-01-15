@@ -5,8 +5,8 @@
 metad: METAD ARG=pca1.eig-1,pca2.eig-1 ...
 # Deposit a Gaussian every 500 time steps, with initial height equal to 1.2 kJ/mol
 PACE=10000000 HEIGHT=0.0 # <- this is the new stuff!
-# the bias factor should be wisely chosen
-BIASFACTOR=10000
+# the bias factor should be wisely chosen, choose very high to approximate non well tempered metad
+BIASFACTOR=100000
 # Gaussian width (sigma) should be chosen based on CV fluctuation in unbiased run
 SIGMA=0.0005,0.0005
 # Gaussians will be written to file and also stored on grid
