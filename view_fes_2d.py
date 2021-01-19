@@ -10,6 +10,7 @@ grid_dims=[0,0]
 ind=0
 x_label_text=''
 y_label_text=''
+
 for i, line in enumerate(open('fes.dat')):
 
     if i==0:
@@ -18,7 +19,7 @@ for i, line in enumerate(open('fes.dat')):
         x_label_text=temp_line[2]
         y_label_text=temp_line[3]
         x_label_text=x_label_text.split('.')[0]
-        y_label_text=x_label_text.split('.')[0]
+        y_label_text=y_label_text.split('.')[0]
 
 for i, line in enumerate(open('fes.dat')):
     for match in re.finditer(pattern, line):
@@ -61,10 +62,9 @@ c = ax.pcolormesh(x, y, z)
 ax.set_title('pcolormesh')
 # set the limits of the plot to the limits of the data
 ax.axis([x.min(), x.max(), y.min(), y.max()])
-ax.set_xlabel('pca1')
-ax.set_ylabel('pca3')
+ax.set_xlabel(x_label_text)
+ax.set_ylabel(y_label_text)
 fig.colorbar(c, ax=ax)
-print(x[0,:])
 
 def format_coord(xt, yt):
     xarr = x[0,:]
@@ -80,5 +80,5 @@ def format_coord(xt, yt):
         return f''
 
 ax.format_coord = format_coord
-
+plt.savefig('fig.pdf')
 plt.show()
