@@ -1,6 +1,5 @@
 import numpy as np
 
-count=0
 with open('COLVAR', 'r') as fhand:
     file_lines = [line[:-1] for line in fhand if ((line.strip() != '') and (('#' in line) == False))] # remove the last character '\n'. **Remove empty lines**.
 line_length=len(file_lines[0].split(' '))
