@@ -1,0 +1,28 @@
+# creates a CV that measures the RMSD from a reference pdb structure
+# the RMSD is measured after OPTIMAL alignment with the target structure
+PCAVARS REFERENCE=plumed_pca_1.pdb TYPE=OPTIMAL LABEL=pca1
+PCAVARS REFERENCE=plumed_pca_2.pdb TYPE=OPTIMAL LABEL=pca2
+#PCAVARS REFERENCE=plumed_pca_3.pdb TYPE=OPTIMAL LABEL=pca3
+
+DISTANCE ATOMS=1961,1773 LABEL=d1
+salt_bridge: ...
+
+MOVINGRESTRAINT
+ARG=d1 
+AT0=0.35 STEP0=0 KAPPA0=1046  
+AT1=0.35 STEP1=25000000 KAPPA1=1046
+AT2=0.35 STEP2=37500000 KAPPA2=0
+...
+
+# the movingrestraint
+restraint: ...
+MOVINGRESTRAINT
+ARG=pca1.eig-1,pca2.eig-1
+AT0=0.0,0.0 STEP0=0       KAPPA0=0,0
+AT1=0.0,0.0        STEP1=1250000       KAPPA1=200000000,200000000
+AT2=0.0191,0.0233 STEP2=3750000 KAPPA2=200000000,200000000
+AT3=0.0191,0.0233 STEP3=16250000 KAPPA3=200000000,200000000
+AT4=0.0191,0.0233 STEP4=20000000 KAPPA4=0,0
+...
+# monitor the two variables and various restraint outputs
+PRINT STRIDE=5000 ARG=pca1.eig-1,pca2.eig-1 FILE=COLVAR
