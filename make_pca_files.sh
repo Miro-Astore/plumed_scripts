@@ -11,38 +11,17 @@ do
 	echo "making vec files"
 	vmd -dispdev text $i -f $3 -e  ./plumed_scripts/mark_reference_atoms.tcl 
 echo "REMARK TYPE=OPTIMAL" > vec_struct.pdb
-cat marked.pdb | grep ^ATOM > file.pdb
-awk '{
-if (NF == 11) {
-	if ($11==1.00) 
-		 print $0 
-}
+cat marked.pdb | grep -E "^.{62}1\.00\s" > file.pdb
 
-if ( NF == 10) {
-	if ($10==1.00) 
-		 print $0 
-}
-}
-' file.pdb >> vec_struct.pdb
+cat  file.pdb >> vec_struct.pdb
 echo "END" >> vec_struct.pdb
 
-	echo "making ref files"
-	vmd -dispdev text $2 -f $3 -e  ./plumed_scripts/mark_reference_atoms.tcl 
+echo "making ref files"
+vmd -dispdev text $2 -f $3 -e  ./plumed_scripts/mark_reference_atoms.tcl 
 
 echo "REMARK TYPE=OPTIMAL" > reference_struct.pdb
-cat marked.pdb | grep ^ATOM > file.pdb
-awk '{
-if (NF == 11) {
-	if ($11==1.00) 
-		 print $0 
-}
-
-if ( NF == 10) {
-	if ($10==1.00) 
-		 print $0 
-}
-}
-' file.pdb >> reference_struct.pdb
+cat marked.pdb | grep -E "^.{62}1\.00\s" > file.pdb
+cat file.pdb >> reference_struct.pdb
 echo "END" >> reference_struct.pdb
 cat reference_struct.pdb vec_struct.pdb  > plumed_pca_$count.pdb
 
