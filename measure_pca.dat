@@ -1,0 +1,9 @@
+# creates a CV that measures the RMSD from a reference pdb structure
+# the RMSD is measured after OPTIMAL alignment with the target structure
+PCAVARS REFERENCE=plumed_pca_1.pdb TYPE=OPTIMAL LABEL=pca1
+PCAVARS REFERENCE=plumed_pca_2.pdb TYPE=OPTIMAL LABEL=pca2
+#PCAVARS REFERENCE=plumed_pca_3.pdb TYPE=OPTIMAL LABEL=pca3
+#
+
+# monitor the two variables and various restraint outputs
+PRINT ARG=pca1.eig-1,pca2.eig-1 FILE=measureCOLVAR
