@@ -6,7 +6,9 @@ from matplotlib.ticker import MaxNLocator
 import matplotlib.pyplot as plt
 import re
 
+mpl.rc('image',cmap='magma')
 #need the number of bins in each axis of the grid.
+cutoffs = [-0.014, 0.024, -0.014, 0.024]
 data=np.loadtxt('fes.dat')
 pattern=re.compile('nbins')
 grid_dims=[0,0]
@@ -38,11 +40,36 @@ for i, line in enumerate(open('fes.dat')):
 
 
 x,y,z=(data[:,0],data[:,1],data[:,2])
+
+#z = z[x<-0.015]
+#z = z[x>0.025]
+#
+#y = y[x<-0.015]
+#y = y[x>0.025]
+#
+#z = z[y<-0.015]
+#z = z[y>0.025]
+#
+#x = x[y<-0.015]
+#x = x[y>0.025]
+
 x=np.reshape(x,grid_dims)
 y=np.reshape(y,grid_dims)
 z=np.reshape(z,grid_dims)
 
 print(np.shape(z))
+
+#z = z[x<-0.015]
+#z = z[x>0.025]
+#
+#y = y[x<-0.015]
+#y = y[x>0.025]
+#
+#z = z[y<-0.015]
+#z = z[y>0.025]
+#
+#x = x[y<-0.015]
+#x = x[y>0.025]
 
 #print (type(x))
 #print ((x))
@@ -61,10 +88,16 @@ fig, ax = plt.subplots()
 
 #c = ax.contourf(x, y, z, cmap='RdBu', vmin=z_min, vmax=z_max,rasterized=True)
 #levels = MaxNLocator(nbins=15).tick_values(z_min, z_max)
-c = ax.pcolormesh(x, y, z)
+print(np.min(z))
+z=z-np.min(z)
+plot_levels=range(0,145,10)
+#c = ax.contour(x, y, z,levels=plot_levels,cornor_mask=True)
+c = ax.contour(x, y, z,levels=plot_levels,colors='k',linewidths=0.6)
+c = ax.contourf(x, y, z,levels=plot_levels)
 ax.set_title('Free Energy Surface of Opening Coordinates.')
 # set the limits of the plot to the limits of the data
-ax.axis([x.min(), x.max(), y.min(), y.max()])
+#ax.axis([x.min(), x.max(), y.min(), y.max()])
+ax.axis(cutoffs)
 ax.set_xlabel(x_label_text)
 ax.set_ylabel(y_label_text)
 fig.colorbar(c, ax=ax)
@@ -84,5 +117,7 @@ def format_coord(xt, yt):
 
 ax.format_coord = format_coord
 #plt.savefig('fes.pdf',dpi=2000)
+plt.tight_layout()
 pickle.dump(fig, open('FigureObject.fig.pickle', 'wb')) # This is for Python 3 - py2 may need `file` instead of `open`
+plt.savefig('FES_temp.pdf')
 plt.show()

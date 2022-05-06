@@ -1,5 +1,4 @@
 import numpy as np
-import pickle
 import matplotlib as mpl
 #mpl.use('Agg')
 from matplotlib.ticker import MaxNLocator
@@ -11,6 +10,7 @@ data=np.loadtxt('fes.dat')
 pattern=re.compile('nbins')
 grid_dims=[0,0]
 ind=0
+num_walkers=4
 x_label_text=''
 y_label_text=''
 
@@ -83,6 +83,32 @@ def format_coord(xt, yt):
         return f''
 
 ax.format_coord = format_coord
-#plt.savefig('fes.pdf',dpi=2000)
-pickle.dump(fig, open('FigureObject.fig.pickle', 'wb')) # This is for Python 3 - py2 may need `file` instead of `open`
+
+    #now we will plot the trace of a simulation over the course of the simulation. Must specify the COLVARS FILE.
+for i in range(num_walkers):
+
+    with open('repl0' + str(i) + '/out.COLVAR.' + str(i), 'r') as fhand:
+        file_lines = [line[:-1] for line in fhand if ((line.strip() != '') and (('#' in line) == False))] # remove the last character '\n'. **Remove empty lines**.
+    line_length=len(file_lines[0].split(' '))
+
+    mat_raw = [[(float(term)) for term in (line.split())] for line in file_lines if len(line.split(' '))==line_length ]
+    mat = np.array(mat_raw)
+    #mat=np.array(mat[:-2])
+    num_cols=np.shape(mat)[1]
+    print(np.shape(mat))
+    # then you can do whatever you like. eg: first column
+    #x=mat[-10000:-1:20,1]
+    #y=mat[-10000:-1:20,2]
+    #12461
+    #last 200 ns  of walker 
+    #x=mat[:-1:10,1]
+    #y=mat[:-1:10,2]
+    x=mat[-2000:-1:10,1]
+    y=mat[-2000:-1:10,2]
+    #if (i==0):
+    #    plt.plot(x,y)
+    plt.plot(x,y)
+
 plt.show()
+
+#########plt.savefig('fes.png',dpi=2000)
