@@ -6,15 +6,16 @@ from matplotlib.ticker import MaxNLocator
 import matplotlib.pyplot as plt
 import re
 
+fes_file="out.FES"
 #need the number of bins in each axis of the grid.
-data=np.loadtxt('fes.dat')
+data=np.loadtxt(fes_file)
 pattern=re.compile('nbins')
 grid_dims=[0,0]
 ind=0
 x_label_text=''
 y_label_text=''
 
-for i, line in enumerate(open('fes.dat')):
+for i, line in enumerate(open(fes_file)):
 
     if i==0:
         temp_line=line
@@ -24,7 +25,7 @@ for i, line in enumerate(open('fes.dat')):
         x_label_text=x_label_text.split('.')[0]
         y_label_text=y_label_text.split('.')[0]
 
-for i, line in enumerate(open('fes.dat')):
+for i, line in enumerate(open(fes_file)):
     for match in re.finditer(pattern, line):
             #print ('Found on line %s: %s' % (i+1, match.group()))
             #print(line)

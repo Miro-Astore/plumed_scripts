@@ -5,8 +5,9 @@ from matplotlib.ticker import MaxNLocator
 import matplotlib.pyplot as plt
 import re
 
+fes_file='out.FES'
 #need the number of bins in each axis of the grid.
-data=np.loadtxt('fes.dat')
+data=np.loadtxt(fes_file)
 pattern=re.compile('nbins')
 grid_dims=[0,0]
 ind=0
@@ -14,7 +15,7 @@ num_walkers=4
 x_label_text=''
 y_label_text=''
 
-for i, line in enumerate(open('fes.dat')):
+for i, line in enumerate(open(fes_file)):
 
     if i==0:
         temp_line=line
@@ -24,7 +25,7 @@ for i, line in enumerate(open('fes.dat')):
         x_label_text=x_label_text.split('.')[0]
         y_label_text=y_label_text.split('.')[0]
 
-for i, line in enumerate(open('fes.dat')):
+for i, line in enumerate(open(fes_file)):
     for match in re.finditer(pattern, line):
             #print ('Found on line %s: %s' % (i+1, match.group()))
             #print(line)
@@ -87,12 +88,13 @@ ax.format_coord = format_coord
     #now we will plot the trace of a simulation over the course of the simulation. Must specify the COLVARS FILE.
 for i in range(num_walkers):
 
-    with open('repl0' + str(i) + '/out.COLVAR.' + str(i), 'r') as fhand:
+    with open('repl0' + str(i) + '/COLVAR.' + str(i), 'r') as fhand:
         file_lines = [line[:-1] for line in fhand if ((line.strip() != '') and (('#' in line) == False))] # remove the last character '\n'. **Remove empty lines**.
     line_length=len(file_lines[0].split(' '))
 
     mat_raw = [[(float(term)) for term in (line.split())] for line in file_lines if len(line.split(' '))==line_length ]
     mat = np.array(mat_raw)
+    print(mat)
     #mat=np.array(mat[:-2])
     num_cols=np.shape(mat)[1]
     print(np.shape(mat))
@@ -103,9 +105,10 @@ for i in range(num_walkers):
     #last 200 ns  of walker 
     #x=mat[:-1:10,1]
     #y=mat[:-1:10,2]
+
     x=mat[-2000:-1:10,1]
     y=mat[-2000:-1:10,2]
-    #if (i==0):
+    #if (i==3):
     #    plt.plot(x,y)
     plt.plot(x,y)
 

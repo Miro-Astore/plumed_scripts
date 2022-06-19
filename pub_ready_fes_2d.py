@@ -6,17 +6,22 @@ from matplotlib.ticker import MaxNLocator
 import matplotlib.pyplot as plt
 import re
 
+
+fes_file = "out.FES"
+
 mpl.rc('image',cmap='magma')
 #need the number of bins in each axis of the grid.
 cutoffs = [-0.014, 0.024, -0.014, 0.024]
-data=np.loadtxt('fes.dat')
+data=np.loadtxt(fes_file)
 pattern=re.compile('nbins')
 grid_dims=[0,0]
 ind=0
 x_label_text=''
 y_label_text=''
 
-for i, line in enumerate(open('fes.dat')):
+plot_levels=range(0,120,10)
+
+for i, line in enumerate(open(fes_file)):
 
     if i==0:
         temp_line=line
@@ -26,7 +31,7 @@ for i, line in enumerate(open('fes.dat')):
         x_label_text=x_label_text.split('.')[0]
         y_label_text=y_label_text.split('.')[0]
 
-for i, line in enumerate(open('fes.dat')):
+for i, line in enumerate(open(fes_file)):
     for match in re.finditer(pattern, line):
             #print ('Found on line %s: %s' % (i+1, match.group()))
             #print(line)
@@ -90,7 +95,6 @@ fig, ax = plt.subplots()
 #levels = MaxNLocator(nbins=15).tick_values(z_min, z_max)
 print(np.min(z))
 z=z-np.min(z)
-plot_levels=range(0,145,10)
 #c = ax.contour(x, y, z,levels=plot_levels,cornor_mask=True)
 c = ax.contour(x, y, z,levels=plot_levels,colors='k',linewidths=0.6)
 c = ax.contourf(x, y, z,levels=plot_levels)
