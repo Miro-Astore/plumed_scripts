@@ -19,7 +19,7 @@ ind=0
 x_label_text=''
 y_label_text=''
 
-plot_levels=range(0,120,10)
+plot_levels=range(0,70,5)
 
 for i, line in enumerate(open(fes_file)):
 

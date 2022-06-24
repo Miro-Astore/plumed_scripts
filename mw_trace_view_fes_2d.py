@@ -11,7 +11,7 @@ data=np.loadtxt(fes_file)
 pattern=re.compile('nbins')
 grid_dims=[0,0]
 ind=0
-num_walkers=4
+num_walkers=8
 x_label_text=''
 y_label_text=''
 
@@ -84,6 +84,7 @@ def format_coord(xt, yt):
         return f''
 
 ax.format_coord = format_coord
+labels=np.array(range(num_walkers))+1
 
     #now we will plot the trace of a simulation over the course of the simulation. Must specify the COLVARS FILE.
 for i in range(num_walkers):
@@ -106,12 +107,14 @@ for i in range(num_walkers):
     #x=mat[:-1:10,1]
     #y=mat[:-1:10,2]
 
-    x=mat[-2000:-1:10,1]
-    y=mat[-2000:-1:10,2]
-    #if (i==3):
+    x=mat[-20000:-1:10,1]
+    y=mat[-20000:-1:10,2]
+    #if (i==2):
     #    plt.plot(x,y)
-    plt.plot(x,y)
+    plt.plot(x,y,label=labels[i])
 
+plt.legend()
+plt.tight_layout()
 plt.show()
 
 #########plt.savefig('fes.png',dpi=2000)
