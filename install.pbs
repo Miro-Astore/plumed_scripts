@@ -1,0 +1,31 @@
+#!/bin/bash
+#PBS -P r16
+#PBS -q gpuvolta
+#PBS -l ngpus=1
+#PBS -l ncpus=12
+#PBS -l storage=scratch/f91
+#PBS -l jobfs=100GB
+#PBS -l walltime=1:00:00
+#PBS -o out.out
+#PBS -e error.out
+
+#PBS -l mem=128GB
+#PBS -l wd
+#PBS -m abe
+#PBS -M yearlyboozefest@gmail.com
+
+#expected benchmarks
+#12 cpu 1 gpu:  46ns/day with plumed, without we get ~60 ns/day
+#48 cpu 4 gpu: untested, without plumed we get double the 1 gpu performance on 4 gpus.
+
+module load intel-mkl/2020.2.254
+module load openmpi/4.0.3
+module load cuda/11.0.3
+module load python3-as-python
+
+cwd=$(pwd)
+./configure --prefix=$cwd --enable-modules=opes
+make -j 4 
+make doc
+make install
+
