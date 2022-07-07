@@ -11,7 +11,7 @@ fes_file = "out.FES"
 
 mpl.rc('image',cmap='magma')
 #need the number of bins in each axis of the grid.
-cutoffs = [-0.014, 0.024, -0.014, 0.024]
+cutoffs = [-0.006, 0.024, -0.006, 0.024]
 data=np.loadtxt(fes_file)
 pattern=re.compile('nbins')
 grid_dims=[0,0]
@@ -19,7 +19,7 @@ ind=0
 x_label_text=''
 y_label_text=''
 
-plot_levels=range(0,70,5)
+plot_levels=range(0,80,2)
 
 for i, line in enumerate(open(fes_file)):
 

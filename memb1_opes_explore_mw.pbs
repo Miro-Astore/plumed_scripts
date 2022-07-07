@@ -1,0 +1,105 @@
+#!/bin/bash
+#PBS -P r16
+#PBS -q dgxa100
+#PBS -l ngpus=8
+#PBS -l ncpus=128
+#PBS -l storage=scratch/f91
+##PBS -l jobfs=100GB
+#PBS -l walltime=12:00:00
+#PBS -o out.out
+#PBS -e error.out
+
+#PBS -l mem=128GB
+#PBS -l wd
+#PBS -m abe
+#PBS -M yearlyboozefest@gmail.com
+
+#expected benchmarks
+#12 cpu 1 gpu:  46ns/day with plumed, without we get ~60 ns/day
+#48 cpu 4 gpu: untested, without plumed we get double the 1 gpu performance on 4 gpus.
+
+module load intel-mkl/2020.2.254
+module load openmpi/4.1.2
+module load cuda/11.6.1
+module load python3-as-python
+
+#source /scratch/f91/ma2374/programs/gromacs_a100/bin/GMXRC.bash
+#module load gromacs/2021.4-gpuampere
+
+export OMP_NUM_THREADS=16
+#export PLUMED_NUM_THREADS=2
+
+export PATH=$PATH:/scratch/f91/ma2374/a100_install/plumed-2.8.0/bin
+export PATH=$PATH:/scratch/f91/ma2374/programs/gromacs_a100_mpicc/bin
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/scratch/f91/ma2374/a100_install/plumed-2.8.0/lib
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/scratch/f91/ma2374/a100_install/plumed-2.8.0/lib/pkgconfig
+export PLUMED_KERNEL=/scratch/f91/ma2374/a100_install/plumed-2.8.0/lib/libplumedKernel.so
+
+echo "= = CUDA_VISIBLE_DEVICES: $CUDA_VISIBLE_DEVICES"
+
+#cp -r $PBS_O_WORKDIR/* $PBS_JOBFS/
+
+pwd
+
+root=$(qstat -f $PBS_JOBID | sed -rn 's/.*Resource_List.walltime = (.*)/\1/p' ) 
+h=$(echo $root | awk -F: '{print $1}')
+m=$(echo $root | awk -F: '{print $2}')
+s=$(echo $root | awk -F: '{print $3}')
+sleep_time=$(( $h*3600 + $m * 60 + $s ))
+sleep_time=$( echo "$sleep_time * 0.95" |  bc -l )
+h_time=$( echo "$sleep_time / 3600" | bc -l )
+
+cd $PBS_O_WORKDIR
+#just doing this so we can see benchmarks over time and keep track of things.
+cp repl00/memb_prod1.log repl00/memb_prod1_backup.log
+cp repl01/memb_prod1.log repl01/memb_prod1_backup.log
+cp repl02/memb_prod1.log repl02/memb_prod1_backup.log
+cp repl03/memb_prod1.log repl03/memb_prod1_backup.log
+cp repl04/memb_prod1.log repl04/memb_prod1_backup.log
+cp repl05/memb_prod1.log repl05/memb_prod1_backup.log
+cp repl06/memb_prod1.log repl06/memb_prod1_backup.log
+cp repl07/memb_prod1.log repl07/memb_prod1_backup.log
+
+if [ -f repl00/memb_prod1.cpt ]
+then
+last_FIELDS_line=$(cat out.STATE | grep -n FIELDS |  cut -f1 -d: | tail -n 1)
+total_length=$(cat out.STATE | wc -l )
+tail -n $(echo $(($last_FIELDS_line - $total_length-1))) out.STATE > snap.STATE
+
+
+mpirun -np 8 mdrun_mpi -ntomp $OMP_NUM_THREADS  -pin on -pinoffset 0 -pinstride 1  -gpu_id 01234567  -deffnm memb_prod1  -multidir repl00 repl01 repl02 repl03  repl04 repl05 repl06 repl07  -cpi memb_prod1.cpt  -plumed ../plumed-opes-mpi-restart.dat  -maxh $h_time &
+md_proc=$!
+else 
+echo "what"
+mpirun -np 8 mdrun_mpi -ntomp $OMP_NUM_THREADS  -pin on -pinoffset 0 -pinstride 1 -gpu_id 01234567 -deffnm memb_prod1 -multidir repl00 repl01 repl02 repl03 repl04 repl05 repl06 repl07  -nsteps 10000 -plumed ../plumed-opes-mpi.dat 
+        source $HOME/.bashrc
+if [ -f repl00/memb_prod1.cpt ]
+    then
+    echo "resubmitted short"
+        nsub memb1.pbs
+    fi
+        exit
+
+md_proc=$!
+
+fi 
+
+echo $last_err
+echo $sleep_time
+
+#if the job has run for more than an hour resubmit it 
+
+#wait till the md process has finished and if it has exitted without errors resubmit this script to restart from a checkpoint
+tail --pid=$md_proc -f /dev/null
+last_err=$?
+wallt=$(qstat -f $PBS_JOBID | sed -rn 's/.*resources_used.walltime = (.*)/\1/p' ) 
+wallt=$(echo $wallt | awk -F: '{print $1}')
+
+source $HOME/.bashrc
+
+if [  $wallt -gt 0 ] ; 
+then 
+nsub memb1.pbs 
+sleep 1
+fi
+exit 

@@ -107,8 +107,8 @@ for i in range(num_walkers):
     #x=mat[:-1:10,1]
     #y=mat[:-1:10,2]
 
-    x=mat[-20000:-1:10,1]
-    y=mat[-20000:-1:10,2]
+    x=mat[-2000:-1:10,1]
+    y=mat[-2000:-1:10,2]
     #if (i==2):
     #    plt.plot(x,y)
     plt.plot(x,y,label=labels[i])

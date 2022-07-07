@@ -8,11 +8,19 @@ import glob
 import itertools
 import matplotlib.gridspec as gridspec
 
+cutoffs = [0.005, 0.024, -0.014, 0.024]
+files=list([])
+for i in range(1,6,1):
+    files.append('out_' + str(i) + '.FES')
+print(files)
+
+plot_levels=range(0,80,10)
+
 #handy function for determining factors don't lose
 def factors(n):    
     return list(set(reduce(list.__add__, ([i, n//i] for i in range(1, int(n**0.5) + 1) if n % i == 0))))
 
-def format_coord(xt, yt):
+def format_coord(xt, yt, zt):
     xarr = x[0,:]
     yarr = y[:,0]
     if ((xt > xarr.min()) & (xt <= xarr.max()) & 
@@ -26,7 +34,6 @@ def format_coord(xt, yt):
         return f''
 
 #detect files and sort them nicely
-files=(glob.glob('fes[0-9]*.dat'))
 files.sort(key=lambda var:[int(x) if x.isdigit() else x for x in re.findall(r'[^0-9]|[0-9]+', var)])
 
 facts = np.sort(np.array((factors(len(files)))))
@@ -126,11 +133,25 @@ for i in range(len(files)):
 
     #c = ax.contourf(x, y, z, cmap='RdBu', vmin=z_min, vmax=z_max,rasterized=True)
     #levels = MaxNLocator(nbins=15).tick_values(z_min, z_max)
-    c = plt.pcolormesh(x, y, z)
+    #c = plt.contour(x, y, z)
+#levels = MaxNLocator(nbins=15).tick_values(z_min, z_max)
+    temp_min = 0
+    for i in range(np.shape(z)[0]): 
+        for j in range(np.shape(z)[1]): 
+            if z[i][j] < temp_min and x[i][j] > cutoffs[0] and  x[i][j] < cutoffs[1] and  y[i][j] > cutoffs[2] and  y[i][j] < cutoffs[3] : 
+            #if z[i][j] < temp_min: 
+                temp_min = z[i][j]
+            
+
+    print(temp_min)
+    z=z-temp_min
+    #c = ax.contour(x, y, z,levels=plot_levels,cornor_mask=True)
+    c = plt.contour(x, y, z,levels=plot_levels,colors='k',linewidths=0.6)
+    c = plt.contourf(x, y, z,levels=plot_levels)
     #plt.title('fes')
     # set the limits of the plot to the limits of the data
-    plt.xlim([x.min(), x.max()])
-    plt.ylim([y.min(), y.max()])
+    plt.xlim([cutoffs[0], cutoffs[1]])
+    plt.ylim([cutoffs[2], cutoffs[3]])
     plt.title(i)
     #plt.ylabel(y_label_text)
     plt.colorbar(c)

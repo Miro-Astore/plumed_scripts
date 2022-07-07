@@ -1,0 +1,54 @@
+# restart previous simulation
+
+ # set up two variables for Phi and Psi dihedral angles 
+PCAVARS REFERENCE=../plumed_pca_1.pdb TYPE=OPTIMAL LABEL=pca1
+PCAVARS REFERENCE=../plumed_pca_2.pdb TYPE=OPTIMAL LABEL=pca2
+#PCAVARS REFERENCE=../plumed_pca_3.pdb TYPE=OPTIMAL LABEL=pca3
+ #
+ # Activate metadynamics in phi and psi
+ # depositing a Gaussian every 500 time steps,
+ # with heig-1ht equal to 12 kJoule/mol,
+ # and width 0.35 rad for both CVs. 
+ #
+ #
+UPPER_WALLS ARG=pca1.eig-1 KAPPA=200000000 AT=0.025 LABEL=uwall1
+LOWER_WALLS ARG=pca1.eig-1 KAPPA=200000000 AT=-0.005 LABEL=lwall1
+                                         
+UPPER_WALLS ARG=pca2.eig-1 KAPPA=200000000 AT=0.025 LABEL=uwall2
+LOWER_WALLS ARG=pca2.eig-1 KAPPA=200000000 AT=-0.005 LABEL=lwall2
+
+FtgValue: CUSTOM ARG=uwall1.bias,uwall2.bias,lwall1.bias,lwall2.bias VAR=x,y,z,a PERIODIC=NO FUNC=x+y+z+a
+Ftg: BIASVALUE ARG=FtgValue 
+ 
+ 
+#DISTANCE ATOMS=1961,1773 LABEL=d1
+#RESTRAINT ARG=d1 AT=0.40 KAPPA=523 LABEL=restraint1
+
+
+OPES_METAD ...
+    LABEL=opes
+    BARRIER=60
+    FILE=out.KERNELS
+    ARG=pca1.eig-1,pca2.eig-1
+    TEMP=310
+    PACE=500
+    BIASFACTOR=inf
+    SIGMA=0.0005,0.0005,
+    STATE_WSTRIDE=10000
+    STATE_WFILE=../out.STATE
+    #GRID_MIN=-0.015,-0.015 
+    #GRID_MAX=0.035,0.035 
+    #GRID_SPACING=0.0002,0.0002
+    #GRID_WSTRIDE=10000
+    #GRID_WFILE=../out.GRIDS
+    EXTRA_BIAS=Ftg.bias
+    STORE_STATES
+    WALKERS_MPI
+... OPES_METAD
+
+ # monitor the two variables and the metadynamics bias potential
+PRINT ...
+    STRIDE=500
+    ARG=pca1.eig-1,pca2.eig-1,opes.bias,opes.zed,opes.rct
+    FILE=COLVAR
+... PRINT
