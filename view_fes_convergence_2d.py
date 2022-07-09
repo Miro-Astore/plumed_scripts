@@ -8,13 +8,13 @@ import glob
 import itertools
 import matplotlib.gridspec as gridspec
 
-cutoffs = [0.005, 0.024, -0.014, 0.024]
+cutoffs = [-0.005, 0.024, -0.005, 0.024]
 files=list([])
-for i in range(1,6,1):
+for i in range(150,350,50):
     files.append('out_' + str(i) + '.FES')
 print(files)
 
-plot_levels=range(0,80,10)
+plot_levels=range(0,90,10)
 
 #handy function for determining factors don't lose
 def factors(n):    
@@ -136,11 +136,11 @@ for i in range(len(files)):
     #c = plt.contour(x, y, z)
 #levels = MaxNLocator(nbins=15).tick_values(z_min, z_max)
     temp_min = 0
-    for i in range(np.shape(z)[0]): 
-        for j in range(np.shape(z)[1]): 
-            if z[i][j] < temp_min and x[i][j] > cutoffs[0] and  x[i][j] < cutoffs[1] and  y[i][j] > cutoffs[2] and  y[i][j] < cutoffs[3] : 
+    for k in range(np.shape(z)[0]): 
+        for l in range(np.shape(z)[1]): 
+            if z[k][l] < temp_min and x[k][l] > cutoffs[0] and  x[k][l] < cutoffs[1] and  y[k][l] > cutoffs[2] and  y[k][l] < cutoffs[3] : 
             #if z[i][j] < temp_min: 
-                temp_min = z[i][j]
+                temp_min = z[k][l]
             
 
     print(temp_min)
@@ -148,11 +148,10 @@ for i in range(len(files)):
     #c = ax.contour(x, y, z,levels=plot_levels,cornor_mask=True)
     c = plt.contour(x, y, z,levels=plot_levels,colors='k',linewidths=0.6)
     c = plt.contourf(x, y, z,levels=plot_levels)
-    #plt.title('fes')
+    plt.title(str(files[i]))
     # set the limits of the plot to the limits of the data
     plt.xlim([cutoffs[0], cutoffs[1]])
     plt.ylim([cutoffs[2], cutoffs[3]])
-    plt.title(i)
     #plt.ylabel(y_label_text)
     plt.colorbar(c)
 
