@@ -14,6 +14,7 @@ ind=0
 num_walkers=8
 x_label_text=''
 y_label_text=''
+plot_levels=range(0,160,2)
 
 for i, line in enumerate(open(fes_file)):
 
@@ -62,7 +63,9 @@ fig, ax = plt.subplots()
 
 #c = ax.contourf(x, y, z, cmap='RdBu', vmin=z_min, vmax=z_max,rasterized=True)
 #levels = MaxNLocator(nbins=15).tick_values(z_min, z_max)
-c = ax.pcolormesh(x, y, z)
+#c = ax.pcolormesh(x, y, z)
+c = ax.contour(x, y, z,levels=plot_levels,colors='k',linewidths=0.6)
+c = ax.contourf(x, y, z,levels=plot_levels)
 ax.set_title('Free Energy Surface of Opening Coordinates.')
 # set the limits of the plot to the limits of the data
 ax.axis([x.min(), x.max(), y.min(), y.max()])
@@ -107,10 +110,10 @@ for i in range(num_walkers):
     #x=mat[:-1:10,1]
     #y=mat[:-1:10,2]
 
-    x=mat[-2000:-1:10,1]
-    y=mat[-2000:-1:10,2]
-    #if (i==2):
-    #    plt.plot(x,y)
+    x=mat[-20000:-1:1000,1]
+    y=mat[-20000:-1:1000,2]
+    #if (i == 1):
+    #    plt.plot(x,y, label=labels[i])
     plt.plot(x,y,label=labels[i])
 
 plt.legend()

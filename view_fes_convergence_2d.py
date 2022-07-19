@@ -10,11 +10,13 @@ import matplotlib.gridspec as gridspec
 
 cutoffs = [-0.005, 0.024, -0.005, 0.024]
 files=list([])
-for i in range(150,350,50):
-    files.append('out_' + str(i) + '.FES')
+files = ['out_900.FES', 'out_925.FES', 'out_950.FES','out.FES']
+#files = ['out_50.FES','out_400.FES','out_500.FES','out_600.FES', 'out_700.FES','out_800.FES']
+#for i in range(200,900,50):
+#    files.append('out_' + str(i) + '.FES')
 print(files)
 
-plot_levels=range(0,90,10)
+plot_levels=range(0,90,2)
 
 #handy function for determining factors don't lose
 def factors(n):    
@@ -34,7 +36,7 @@ def format_coord(xt, yt, zt):
         return f''
 
 #detect files and sort them nicely
-files.sort(key=lambda var:[int(x) if x.isdigit() else x for x in re.findall(r'[^0-9]|[0-9]+', var)])
+#files.sort(key=lambda var:[int(x) if x.isdigit() else x for x in re.findall(r'[^0-9]|[0-9]+', var)])
 
 facts = np.sort(np.array((factors(len(files)))))
 
@@ -57,7 +59,7 @@ print(num_plots_rows)
 print(num_plots_cols)
 
 #make grid for viewing convergence
-plt.figure(figsize=(10,4))
+#plt.figure(figsize=(10,4))
 AX=gridspec.GridSpec(num_plots_rows,num_plots_cols)
 #AX.update (wspace=0.4,hspace=0.8)
 
@@ -148,15 +150,16 @@ for i in range(len(files)):
     #c = ax.contour(x, y, z,levels=plot_levels,cornor_mask=True)
     c = plt.contour(x, y, z,levels=plot_levels,colors='k',linewidths=0.6)
     c = plt.contourf(x, y, z,levels=plot_levels)
+    #c = plt.pcolormesh(x, y, z)
     plt.title(str(files[i]))
     # set the limits of the plot to the limits of the data
     plt.xlim([cutoffs[0], cutoffs[1]])
     plt.ylim([cutoffs[2], cutoffs[3]])
+    plt.format_coord = format_coord
     #plt.ylabel(y_label_text)
     plt.colorbar(c)
 
 
-    plt.format_coord = format_coord
 #plt.savefig('fig.pdf')
 plt.tight_layout()
 plt.show()

@@ -85,5 +85,5 @@ def format_coord(xt, yt):
 
 ax.format_coord = format_coord
 #plt.savefig('fes.pdf',dpi=2000)
-pickle.dump(fig, open('FigureObject.fig.pickle', 'wb')) # This is for Python 3 - py2 may need `file` instead of `open`
+#pickle.dump(fig, open('FigureObject.fig.pickle', 'wb')) # This is for Python 3 - py2 may need `file` instead of `open`
 plt.show()

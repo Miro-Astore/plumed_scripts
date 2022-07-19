@@ -1,5 +1,5 @@
 equil_time=0
-stride=50000
+stride=60000
 
 export PATH=$PATH:/scratch/f91/ma2374/a100_install/plumed-2.8.0/bin
 export PATH=$PATH:/scratch/f91/ma2374/programs/gromacs_a100_mpicc/bin
@@ -13,7 +13,7 @@ blocks=$(printf "%.0f\n" $blocks)
 echo $blocks
 
 #for i in $(seq 1 $blocks); 
-for i in $(seq 1 1); 
+for i in $(seq 1 $blocks); 
 do
 	max_time=$( echo "$total_time - $equil_time - ($stride * $(($i - 1)))"  | bc -l)
         echo $max_time

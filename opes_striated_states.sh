@@ -1,9 +1,9 @@
-equil_time=0
-stride=50000
+equil_time=900000
+stride=25000
 whole_state_file="out.STATE"
 
 total_time=$(cat out.STATE  | tail -n 5 | head -n 1  | awk '{print $1}') 
-blocks=$( echo "($total_time - $equil_time) / $stride " | bc -l )
+blocks=$( echo "1+($total_time - $equil_time) / $stride " | bc -l )
 blocks=$(printf "%.0f\n" $blocks)
 echo $blocks
 
@@ -13,10 +13,10 @@ echo $blocks
 
 cat $whole_state_file | grep -v \# | awk '{print $1}' | uniq > /dev/shm/time_stamps.txt
 
-#for i in $(seq 1 $blocks); 
 for i in $(seq 1 $blocks); 
+#for i in $(seq 1 8); 
 do
-	target_time=$( echo "$total_time - $equil_time - ($stride * $(($i - 1)))"  | bc -l)
+	target_time=$( echo "$equil_time + ($stride * $(($i - 1)))"  | bc -l)
         
         target_time_ns=$(($target_time / 1000))
         echo $target_time_ns
@@ -41,7 +41,7 @@ do
         #cat KERNELS_$i | grep -v \# >> copy.KERNELS
         #cat copy.KERNELS | head -n-1 > temp.KERNELS
         #mv temp.KERNELS copy.KERNELS
-        python plumed_scripts/FES_from_State.py --temp 310 -f STATE_$target_time_ns -o out_$STATE_$target_time_ns.FES
+        python plumed_scripts/FES_from_State.py --temp 310 -f STATE_$target_time_ns -o out_$target_time_ns.FES
 done 
 
 #python plumed_scripts/view_fes_convergence_2d.py
