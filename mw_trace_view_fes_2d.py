@@ -5,13 +5,13 @@ from matplotlib.ticker import MaxNLocator
 import matplotlib.pyplot as plt
 import re
 
-fes_file='out.FES'
+fes_file='out_2100.FES'
 #need the number of bins in each axis of the grid.
 data=np.loadtxt(fes_file)
 pattern=re.compile('nbins')
 grid_dims=[0,0]
 ind=0
-num_walkers=8
+num_walkers=1
 x_label_text=''
 y_label_text=''
 plot_levels=range(0,160,2)
@@ -43,8 +43,9 @@ x,y,z=(data[:,0],data[:,1],data[:,2])
 x=np.reshape(x,grid_dims)
 y=np.reshape(y,grid_dims)
 z=np.reshape(z,grid_dims)
+print(np.min(z))
+z=z-np.min(z)
 
-print(np.shape(z))
 
 #print (type(x))
 #print ((x))
@@ -110,8 +111,8 @@ for i in range(num_walkers):
     #x=mat[:-1:10,1]
     #y=mat[:-1:10,2]
 
-    x=mat[-20000:-1:1000,1]
-    y=mat[-20000:-1:1000,2]
+    x=mat[:-1:1000,1]
+    y=mat[:-1:1000,2]
     #if (i == 1):
     #    plt.plot(x,y, label=labels[i])
     plt.plot(x,y,label=labels[i])

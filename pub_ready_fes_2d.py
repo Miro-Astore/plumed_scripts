@@ -7,11 +7,11 @@ import matplotlib.pyplot as plt
 import re
 
 
-fes_file = "out_975.FES"
+fes_file = "fes10.dat"
 
 mpl.rc('image',cmap='magma')
 #need the number of bins in each axis of the grid.
-cutoffs = [-0.004, 0.024, -0.004, 0.024]
+cutoffs = [-0.035, 0.035, -0.035, 0.035]
 data=np.loadtxt(fes_file)
 pattern=re.compile('nbins')
 grid_dims=[0,0]
@@ -122,6 +122,6 @@ def format_coord(xt, yt):
 ax.format_coord = format_coord
 #plt.savefig('fes.pdf',dpi=2000)
 plt.tight_layout()
-pickle.dump(fig, open('FigureObject.fig.pickle', 'wb')) # This is for Python 3 - py2 may need `file` instead of `open`
-plt.savefig('FES_temp.pdf')
+#pickle.dump(fig, open('FigureObject.fig.pickle', 'wb')) # This is for Python 3 - py2 may need `file` instead of `open`
+#plt.savefig('FES_temp.pdf')
 plt.show()

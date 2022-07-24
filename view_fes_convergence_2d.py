@@ -8,15 +8,16 @@ import glob
 import itertools
 import matplotlib.gridspec as gridspec
 
-cutoffs = [-0.005, 0.024, -0.005, 0.024]
+#cutoffs = [-0.005, 0.024, -0.005, 0.024]
+cutoffs = [-0.035, 0.035, -0.035, 0.035]
 files=list([])
-files = ['out_900.FES', 'out_925.FES', 'out_950.FES','out.FES']
-#files = ['out_50.FES','out_400.FES','out_500.FES','out_600.FES', 'out_700.FES','out_800.FES']
+files = ['out_300.FES','out_400.FES','out_500.FES','out_600.FES','out_700.FES','out_800.FES','out_900.FES','out_1000.FES','out_1100.FES']
+#files = ['out_1900.FES','out_2000.FES','out_2100.FES','out_2200.FES']
 #for i in range(200,900,50):
 #    files.append('out_' + str(i) + '.FES')
 print(files)
 
-plot_levels=range(0,90,2)
+plot_levels=range(0,60,2)
 
 #handy function for determining factors don't lose
 def factors(n):    

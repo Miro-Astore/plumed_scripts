@@ -1,32 +1,28 @@
-equil_time=0
-stride=60000
-
-export PATH=$PATH:/scratch/f91/ma2374/a100_install/plumed-2.8.0/bin
-export PATH=$PATH:/scratch/f91/ma2374/programs/gromacs_a100_mpicc/bin
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/scratch/f91/ma2374/a100_install/plumed-2.8.0/lib
-export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/scratch/f91/ma2374/a100_install/plumed-2.8.0/lib/pkgconfig
-export PLUMED_KERNEL=/scratch/f91/ma2374/a100_install/plumed-2.8.0/lib/libplumedKernel.so
-
-total_time=$(cat repl00/out.KERNELS  | tail -n 5 | head -n 1  | awk '{print $1}') 
+module load plumed/2.6.0
+whole_hills_file="HILLS"
+equil_time=100000
+stride=100000
+total_time=$(cat $whole_hills_file  | tail -n 5 | head -n 1  | awk '{print $1}') 
 blocks=$( echo "($total_time - $equil_time) / $stride " | bc -l )
 blocks=$(printf "%.0f\n" $blocks)
 echo $blocks
 
-#for i in $(seq 1 $blocks); 
 for i in $(seq 1 $blocks); 
+#for i in $(seq 0 $blocks); 
 do
-	max_time=$( echo "$total_time - $equil_time - ($stride * $(($i - 1)))"  | bc -l)
+	max_time=$( echo "$equil_time + ($stride * $(($i - 1)))"  | bc -l)
+
         echo $max_time
-	#cat repl00/out.KERNELS | awk -v  max_time=$max_time  '$0  && $1 < max_time ' > KERNELS_$i
-	cat repl00/out.KERNELS > KERNELS_$i
+	cat $whole_hills_file | awk -v  max_time=$max_time  '$0  && $1 < max_time ' > HILLS_$i
+        max_time_ns=$(($max_time / 1000))
         #grab header
-        cat KERNELS_$i  | head -n 10 | grep \# | sed "s^\.^^g" > copy.KERNELS
+        cat HILLS_$i  | head -n 10 | grep \# > copy.HILLS
         #append the rest of the file
-        cat KERNELS_$i | grep -v \# >> copy.KERNELS
-        cat copy.KERNELS | head -n-1 > temp.KERNELS
-        mv temp.KERNELS copy.KERNELS
-        python plumed_scripts/State_from_Kernels.py  -f copy.KERNELS -o out_$i.STATE
-        python plumed_scripts/FES_from_State.py --temp 310 -f out_$i.STATE -o out_$i.FES
+        cat HILLS_$i | grep -v \# >> copy.HILLS
+        cat copy.HILLS | head -n-1 > temp.HILLS
+        mv temp.HILLS copy.HILLS
+        plumed sum_hills --hills copy.HILLS --bin 200,200 --outfile out_$max_time_ns.FES
+
 done 
 
 #python plumed_scripts/view_fes_convergence_2d.py
